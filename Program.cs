@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AutoProjectRenamer.Contracts;
+using AutoProjectRenamer.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -6,178 +8,203 @@ using System.Linq;
 //using static System.Console;
 namespace AutoProjectRenamer
 {
-   class Program
-   {
-      public static void WriteLine(string buffer, ConsoleColor foreground = ConsoleColor.DarkGreen, ConsoleColor backgroundColor = ConsoleColor.Black)
-      {
-         Console.ForegroundColor = foreground;
-         Console.BackgroundColor = backgroundColor;
-         Console.WriteLine(buffer);
-         Console.ResetColor();
-      }
+    class Program
+    {
+        public static void WriteLine(string buffer, ConsoleColor foreground = ConsoleColor.DarkGreen, ConsoleColor backgroundColor = ConsoleColor.Black)
+        {
+            Console.ForegroundColor = foreground;
+            Console.BackgroundColor = backgroundColor;
+            Console.WriteLine(buffer);
+            Console.ResetColor();
+        }
 
-      public static string ReadLine()
-      {
-         var line = Console.ReadLine();
-         return line ?? string.Empty;
-      }
+        public static string ReadLine()
+        {
+            var line = Console.ReadLine();
+            return line ?? string.Empty;
+        }
 
-      static void Main(string[] args)
-      {
-         bool doWhile = true;
+        public static void Test()
+        {
+            IChangingName changingName = new ChangingName();
 
-         WriteLine("welcome! please enter your project root path");
+            changingName.ChangeSolutionName(@"C:\Users\farshid\source\repos\arezoaifour",
+                "arezoaifour", "salam");
+        }
+        static void Main(string[] args)
+        {
+            Test();
+            return;
+            bool doWhile = true;
 
-         while(doWhile) {
-            var rl = ReadLine();
+            WriteLine("welcome! please enter your project root path");
 
-            if(string.IsNullOrEmpty(rl)) {
-               continue;
-            }
+            while (doWhile)
+            {
+                var rl = ReadLine();
 
-            var rootPath = rl.Trim('\"');
-            if(!Path.IsPathFullyQualified(rl)) {
-               WriteLine("welcome! please enter your project root path");
-               continue;
-            }
+                if (string.IsNullOrEmpty(rl))
+                {
+                    continue;
+                }
 
-            if(Directory.Exists(rootPath)) {
+                var rootPath = rl.Trim('\"');
+                if (!Path.IsPathFullyQualified(rl))
+                {
+                    WriteLine("welcome! please enter your project root path");
+                    continue;
+                }
 
-               // find solution file
-               var slnFile = new DirectoryInfo(rootPath).GetFiles().SingleOrDefault(p => p.Extension == ".sln");
+                if (Directory.Exists(rootPath))
+                {
 
-               // check if there where no .sln file
-               if(slnFile == null || !slnFile.Exists) {
-                  WriteLine("there is no solution file (.sln)");
-                  WriteTryAgainOrExit();
-                  continue;
-               }
+                    // find solution file
+                    var slnFile = new DirectoryInfo(rootPath).GetFiles().SingleOrDefault(p => p.Extension == ".sln");
 
-               // find all project files
-               var csprojFiles = GetAllFilesByExtension(rootPath, ".csproj");
-
-               // if solution was same with any of project files
-               if(
-                  csprojFiles.Length != 0
-                  &&
-                  csprojFiles.Any(p =>
-                     p.Name.Replace(p.Extension, "") ==
-                     slnFile.Name.Replace(slnFile.Extension, ""))
-               ) {
-                  WriteLine("your solution (.sln) and project (.csproj) file have a same name");
-                  WriteLine("do you want to change the both file names? (y/n)");
-                  WriteLine("[y] means both");
-                  WriteLine("[n] means just solution");
-
-                  while(true) {
-                     var answer = ReadLine();
-                     string newName;
-
-                     if(string.IsNullOrEmpty(answer))
+                    // check if there where no .sln file
+                    if (slnFile == null || !slnFile.Exists)
+                    {
+                        WriteLine("there is no solution file (.sln)");
+                        WriteTryAgainOrExit();
                         continue;
+                    }
 
-                     switch(answer?.Trim()) {
-                        case "y":
-                           while(true) {
-                              WriteLine("alright, now what's the new name?");
-                              newName = ReadLine();
+                    // find all project files
+                    var csprojFiles = GetAllFilesByExtension(rootPath, ".csproj");
 
-                              if(!(IsValidFileName(rootPath, $"{newName}.sln") && IsValidFileName(rootPath, $"{newName}.csproj"))) {
-                                 WriteLine("entered name is invalid");
-                                 WriteLine("HINT: maybe invalid characters or duplicated name");
-                                 WriteTryAgainOrExit();
-                              }
-                              else
-                                 break;
-                           }
+                    // if solution was same with any of project files
+                    if (
+                       csprojFiles.Length != 0
+                       &&
+                       csprojFiles.Any(p =>
+                          p.Name.Replace(p.Extension, "") ==
+                          slnFile.Name.Replace(slnFile.Extension, ""))
+                    )
+                    {
+                        WriteLine("your solution (.sln) and project (.csproj) file have a same name");
+                        WriteLine("do you want to change the both file names? (y/n)");
+                        WriteLine("[y] means both");
+                        WriteLine("[n] means just solution");
 
-                           WriteLine("operation started ;)");
-                           ///////////////////////////////////////////
-                           // KEEP CALM NIGGA THIS IS THE HARD PART //
-                           ///////////////////////////////////////////
-                           // CHANGE FILES WITH NEW NAME //
-                           ////////////////////////////////
+                        while (true)
+                        {
+                            var answer = ReadLine();
+                            string newName;
 
-                           break;
+                            if (string.IsNullOrEmpty(answer))
+                                continue;
 
-                        case "n":
-                           while(true) {
-                              WriteLine("alright, now what's the new name?");
-                              newName = ReadLine();
+                            switch (answer?.Trim())
+                            {
+                                case "y":
+                                    while (true)
+                                    {
+                                        WriteLine("alright, now what's the new name?");
+                                        newName = ReadLine();
 
-                              if(!IsValidFileName(rootPath, $"{newName}.sln")) {
-                                 WriteLine("entered name is invalid");
-                                 WriteLine("HINT: maybe invalid characters or duplicated name");
-                                 WriteTryAgainOrExit();
-                              }
-                              else
-                                 break;
-                           }
+                                        if (!(IsValidFileName(rootPath, $"{newName}.sln") && IsValidFileName(rootPath, $"{newName}.csproj")))
+                                        {
+                                            WriteLine("entered name is invalid");
+                                            WriteLine("HINT: maybe invalid characters or duplicated name");
+                                            WriteTryAgainOrExit();
+                                        }
+                                        else
+                                            break;
+                                    }
 
-                           WriteLine("operation started ;)");
-                           ///////////////////////////////////////////
-                           // KEEP CALM NIGGA THIS IS THE HARD PART //
-                           ///////////////////////////////////////////
-                           // CHANGE FILES WITH NEW NAME //
-                           ////////////////////////////////
+                                    WriteLine("operation started ;)");
+                                    ///////////////////////////////////////////
+                                    // KEEP CALM NIGGA THIS IS THE HARD PART //
+                                    ///////////////////////////////////////////
+                                    // CHANGE FILES WITH NEW NAME //
+                                    ////////////////////////////////
 
-                           break;
+                                    break;
 
-                        default:
-                           WriteLine($"{answer} is not an option :/\ntry again");
-                           continue;
-                     }
-                  }
-               }
-               else {
+                                case "n":
+                                    while (true)
+                                    {
+                                        WriteLine("alright, now what's the new name?");
+                                        newName = ReadLine();
 
-               }
+                                        if (!IsValidFileName(rootPath, $"{newName}.sln"))
+                                        {
+                                            WriteLine("entered name is invalid");
+                                            WriteLine("HINT: maybe invalid characters or duplicated name");
+                                            WriteTryAgainOrExit();
+                                        }
+                                        else
+                                            break;
+                                    }
 
-               continue;
+                                    WriteLine("operation started ;)");
+                                    ///////////////////////////////////////////
+                                    // KEEP CALM NIGGA THIS IS THE HARD PART //
+                                    ///////////////////////////////////////////
+                                    // CHANGE FILES WITH NEW NAME //
+                                    ////////////////////////////////
+
+                                    break;
+
+                                default:
+                                    WriteLine($"{answer} is not an option :/\ntry again");
+                                    continue;
+                            }
+                        }
+                    }
+                    else
+                    {
+
+                    }
+
+                    continue;
+                }
+                else
+                {
+                    WriteLine("directory doesn't exist");
+                    WriteTryAgainOrExit();
+                    continue;
+                }
             }
-            else {
-               WriteLine("directory doesn't exist");
-               WriteTryAgainOrExit();
-               continue;
+        }
+
+        public static void WriteTryAgainOrExit()
+        {
+            WriteLine("please try again or exit by Ctrl+C");
+        }
+
+        public static FileInfo[] GetAllFilesByExtension(string rootPath, string extension)
+        {
+            var files = new List<FileInfo>();
+            var directories = new DirectoryInfo(rootPath).GetDirectories("*",
+               new EnumerationOptions
+               {
+                   AttributesToSkip = FileAttributes.Hidden
+               });
+
+            foreach (var directory in directories)
+            {
+                files.AddRange(directory.GetFiles().Where(f => f.Extension == extension));
+
+                if (Directory.GetDirectories(directory.FullName).Any())
+                    GetAllFilesByExtension(directory.FullName, extension);
             }
-         }
-      }
 
-      public static void WriteTryAgainOrExit()
-      {
-         WriteLine("please try again or exit by Ctrl+C");
-      }
+            files.AddRange(new DirectoryInfo(rootPath).GetFiles().Where(f => f.Extension == extension));
+            return files.ToArray();
+        }
 
-      public static FileInfo[] GetAllFilesByExtension(string rootPath, string extension)
-      {
-         var files = new List<FileInfo>();
-         var directories = new DirectoryInfo(rootPath).GetDirectories("*",
-            new EnumerationOptions {
-               AttributesToSkip = FileAttributes.Hidden
-            });
+        public static FileInfo[] GetAllProjectFiles(string rootPath)
+        {
+            return GetAllFilesByExtension(rootPath, ".csproj");
+        }
 
-         foreach(var directory in directories) {
-            files.AddRange(directory.GetFiles().Where(f => f.Extension == extension));
-
-            if(Directory.GetDirectories(directory.FullName).Any())
-               GetAllFilesByExtension(directory.FullName, extension);
-         }
-
-         files.AddRange(new DirectoryInfo(rootPath).GetFiles().Where(f => f.Extension == extension));
-         return files.ToArray();
-      }
-
-      public static FileInfo[] GetAllProjectFiles(string rootPath)
-      {
-         return GetAllFilesByExtension(rootPath, ".csproj");
-      }
-
-      public static bool IsValidFileName(string rootPath, string filename)
-      {
-         return
-            filename.IndexOfAny(Path.GetInvalidFileNameChars()) == -1
-            &&
-            !File.Exists(Path.Combine(rootPath, filename));
-      }
-   }
+        public static bool IsValidFileName(string rootPath, string filename)
+        {
+            return
+               filename.IndexOfAny(Path.GetInvalidFileNameChars()) == -1
+               &&
+               !File.Exists(Path.Combine(rootPath, filename));
+        }
+    }
 }
