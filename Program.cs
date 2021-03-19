@@ -33,10 +33,8 @@ namespace AutoProjectRenamer
         }
         static void Main(string[] args)
         {
-            Test();
-            return;
             bool doWhile = true;
-
+            IChangingName changingName = new ChangingName();
             WriteLine("welcome! please enter your project root path");
 
             while (doWhile)
