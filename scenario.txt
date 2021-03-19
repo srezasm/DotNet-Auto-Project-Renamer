@@ -1,0 +1,42 @@
+> dotnet renamer
+	< please enter your project path. for mor information use dotnet renamer --help
+
+> dotnet renamer "[.sln root path]"
+	$ check if the .sln and .csproj have the same name
+		if both had a same name
+		|	< your solution and project have a same name so..
+		|	< do you want me to also change your project name? (n/y)
+		|		> y
+		|		|	< ok, give me the new name
+		|		|		> [the new name]
+		|		|			$ change base directory name
+		|		|			$ change sln file name
+		|		|			$ change solution name in .sln file
+		|		|			$ change sln.DotSettings file name
+		|		|			$ change change project folder name
+		|		|			$ change csproj file name
+		|		|			$ change csproj.user file name
+		|		|			$ find all .cs files and change their namespace (the first parameter after namespace keyword is the project name and we have to change it.)
+		|		|						https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-sln
+		|		|			$ remove old project from sln with [dotnet sln [<SOLUTION_FILE>] remove <PROJECT_PATH>]
+		|		|			$ add new project in sln with [dotnet sln [<SOLUTION_FILE>] add [--in-root] [-s|--solution-folder <PATH>] <PROJECT_PATH>]
+		|		> n
+		|			< ok, give me the new name
+		|				> [the new name]
+		|					$ change base directory name
+		|					$ change .sln file name
+		|					$ change .sl content
+		|					$ change .sln.DotSettings file name
+		|
+		else they had different names
+			< please give me the new name
+				> [the new name]
+					$ change base directory name
+					$ change .sln file name
+					$ change .sl content
+					$ change .sln.DotSettings file name
+
+> dotnet renamer "[.csproj root path]"
+	< please give me the new name
+		> [the new name]
+			
