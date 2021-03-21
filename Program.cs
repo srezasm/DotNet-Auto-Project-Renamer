@@ -1,9 +1,11 @@
-﻿using AutoProjectRenamer.Contracts;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using AutoProjectRenamer.Utils;
+using AutoProjectRenamer.Utils.SlnFile;
+
 //using static System.Console;
 
 namespace AutoProjectRenamer
@@ -28,7 +30,8 @@ namespace AutoProjectRenamer
       {
          bool doWhile = true;
 
-         WriteLine("welcome! please enter your project root path");
+         //todo: test if it writes as yellow color!
+         WriteLine("\x1B[39m" + "welcome! please enter your project root path" + "\x1B[39m");
 
          while(doWhile) {
             var rl = ReadLine();
@@ -116,7 +119,10 @@ namespace AutoProjectRenamer
                                  break;
                            }
 
+                           var x = new SlnFile();
+
                            WriteLine("operation started ;)");
+
                            ///////////////////////////////////////////
                            // KEEP CALM NIGGA THIS IS THE HARD PART //
                            ///////////////////////////////////////////
