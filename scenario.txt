@@ -36,7 +36,7 @@
 					$ change .sl content
 					$ change .sln.DotSettings file name
 
-> dotnet renamer "[.csproj root path]"
-	< please give me the new name
-		> [the new name]
+
+< please give me the new name
+	> [the new name]
 			
