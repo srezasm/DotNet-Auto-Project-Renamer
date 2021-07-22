@@ -1,18 +1,27 @@
-< welcome! please give me your project path
-	> [path]
-		$ find sln and all the csproj's
-		< which one do you want to rename?
-		< 0 = sln
-		< 1 = ProjectOne.csproj
-		...
-			> [the item index]
-				< alright, now please give me the new name
-					> [the new name]
-						if [the new name] was a csproj
-							$ change .csproj file name
-							$ change .csproj directory name if exist
-							$ change namespaces in .cs files
-
-						if [the new name] was the sln
-							$ change .sln file name
-							$ change .sln directory name if exist
+// use factory method design patternt to frequently change colsone foreground color
+// https://refactoring.guru/design-patterns/factory-method
+> dotnet-project-renamer
+   "welcome! please give me your project path"
+      > [project path]
+         (path is correct && path contains a solution && path contains a project)
+            "well, which one do you want to rename?"
+            "code          item name"
+            "0             xxx.sln"
+            "1             xxx.csproj"
+               > [item number]
+                  (is nuber correct)
+                     // use strategy design pattern to change the name
+                     // https://refactoring.guru/design-patterns/strategy
+                     if sln {
+                        change dir name
+                        change sln file name
+                     }
+                     if csproj {
+                        chnage csproj dir name
+                        change csproj file name
+                        chnage all .cs files namespace in content
+                     }
+                        "select another item or quite by CTRL + C"
+                        "0: xxx.sln"
+                        "1: xxx.csproj"
+                        ...

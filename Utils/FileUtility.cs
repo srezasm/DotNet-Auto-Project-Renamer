@@ -43,7 +43,7 @@ namespace AutoProjectRenamer.Utils
             !Directory.Exists(Path.Combine(rootPath, dirName));
       }
 
-      public static List<FileInfo> GetAllFilesByExtension(string dirPath, string extension, string[] exceptionDirectories = null)
+      private static List<FileInfo> GetAllFilesByExtension(string dirPath, string extension, string[] exceptionDirectories = null)
       {
          List<FileInfo> GetFiles(string path)
          {
